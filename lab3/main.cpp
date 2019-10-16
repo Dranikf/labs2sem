@@ -1,21 +1,63 @@
 #include <gtk/gtk.h>
 #include <libintl.h>
 #include <iostream>
+#include <vector>
 
 // g++ main.cpp `pkg-config --cflags --libs gtk+-3.0`
 
 // https://www.ibm.com/developerworks/ru/library/os-gtk2/index.html
  
+using namespace std;
+
 #define _(x) gettext (x)
-#define N_(x) (x)
- 
-#define GETTEXT_PACKAGE "gtk-hello"
-#define LOCALEDIR "mo"
- 
+
+
+class example{
+
+public:
+  static int count;
+
+  example ();
+  ~example ();
+
+};
+
+int example::count;
+
+example::example(){
+
+  cout<< "object #" << count << " is created" << endl;
+  count++;
+
+}
+
+example::~example(){
+
+  count--;
+  cout<< "object #" << count << " is destroed" << endl;
+
+}
+
+
+vector<example*> array;
 
 // обработчик для надатия кнопки
-static void cb_button_click(GtkButton *button, gpointer data)
+static void cb_button1_click(GtkButton *button, gpointer data)
 {
+  array.push_back(new example);
+}
+
+static void cb_button2_click(GtkButton *button, gpointer data)
+{
+
+  if(example::count == 0){
+    cout << "no objects" << endl;
+    return;
+  }
+  
+  delete array[example::count - 1];
+
+  array.erase(array.begin() + (const int)example::count);
 
 }
 
@@ -33,12 +75,7 @@ int main (int argc, char *argv[])
 {
   // строки программы инициализирующие gtk=====================
   GtkWidget* window, *button1, *button2, *vbox;// объявление указателей на некоторые виджеты
-  
-  // функции включающие поддержку интернационаллизации
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-  textdomain (GETTEXT_PACKAGE);
-  // это наверное включение разных языков для использования в программе
+ 
  
   gtk_init(&argc, &argv);// для gtk вызов этой функции обязателен
   // аргументами передаются те параметры с которыми запущена программа
@@ -71,7 +108,11 @@ int main (int argc, char *argv[])
   // в последний параметр передается указатель на label
 
   g_signal_connect (G_OBJECT (button1), "clicked", 
-            G_CALLBACK (cb_button_click), NULL);
+            G_CALLBACK (cb_button1_click), NULL);
+  
+
+  g_signal_connect (G_OBJECT (button2), "clicked", 
+         G_CALLBACK (cb_button2_click), NULL);
   // регистрация обратных вызовов++++++++++++++++++++++++++  
  
   // после того как зарегистрировали все эти тонкости
