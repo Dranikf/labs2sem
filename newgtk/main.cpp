@@ -86,7 +86,11 @@ int main (int argc, char *argv[])
             G_CALLBACK (cb_button_click), label);
   // регистрация обратных вызовов++++++++++++++++++++++++++  
  
+  // после того как зарегистрировали все эти тонкости
+  // отображаем окно
   gtk_widget_show_all(window);
+
+  // запускам главный цикл
   gtk_main();
  
   return 0;
