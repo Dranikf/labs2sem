@@ -121,6 +121,9 @@ int main (int argc, char *argv[])
 
   // запускам главный цикл
   gtk_main();
- 
+
+  // после отработки удаляем в все оставшиеся элементы
+  for (int i = example::count-1; i >= 0; i--)
+    delete array[i];
   return 0;
 }

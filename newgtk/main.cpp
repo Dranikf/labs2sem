@@ -92,6 +92,7 @@ int main (int argc, char *argv[])
 
   // запускам главный цикл
   gtk_main();
+  
  
   return 0;
 }
