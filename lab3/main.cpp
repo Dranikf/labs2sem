@@ -125,5 +125,6 @@ int main (int argc, char *argv[])
   // после отработки удаляем в все оставшиеся элементы
   for (int i = example::count-1; i >= 0; i--)
     delete array[i];
+    
   return 0;
 }
