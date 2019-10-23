@@ -19,4 +19,5 @@ public:
     ~STATION();
 
     void showStationInfo();
+    position getPosition();
 };

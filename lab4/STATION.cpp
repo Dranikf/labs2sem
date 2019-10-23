@@ -24,3 +24,9 @@ void STATION::showStationInfo(){
     cout << "station name: " << statinonName << endl ; 
 
 }
+
+position STATION::getPosition(){
+
+    return st_pos;
+
+}
