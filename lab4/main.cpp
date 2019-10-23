@@ -1,10 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include "STATION.h"
+#include "TRAIN.h"
 #include <fstream>
 
 vector<STATION> stations;
+vector<TRAIN>   trains;
 
 const float stationRadius = 3.f;
+const float trainRadius = 5.f;
 
 bool readStationData(string fileName){
 
@@ -43,6 +46,28 @@ void drawStations(sf::RenderWindow * window){
     }
 }
 
+void createTrains(){
+
+    trains.push_back(TRAIN(0, 1, sf::Color::Red));
+    trains.push_back(TRAIN(2, 2, sf::Color::Blue));
+
+}
+
+void drawTrains(sf::RenderWindow * window){
+
+    sf::CircleShape station_graphicks(trainRadius);	
+    position tempPosition;
+
+        for (int i = 0; i < trains.size(); i++){
+        tempPosition = stations[trains[i].getStationIndex()].getPosition();
+
+        station_graphicks.setFillColor(trains[i].getTrainColor());
+        station_graphicks.setPosition(tempPosition.x, tempPosition.y); 
+        window->draw(station_graphicks);
+    }
+
+}
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(400, 300), "My window");
@@ -52,6 +77,8 @@ int main()
 
     if(!readStationData("stations.inf"))
         return 0;
+
+    createTrains();
 
     while (window.isOpen())
     {
@@ -66,6 +93,7 @@ int main()
         window.clear(sf::Color::White);
 
         drawStations(&window);
+        drawTrains(&window);
 
         window.display();
     }
