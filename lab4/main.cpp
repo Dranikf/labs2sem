@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "STATION.h"
+//#include "STATION.h"
 #include "TRAIN.h"
 #include <fstream>
 
@@ -72,6 +72,8 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(400, 300), "My window");
 
+    sf::Vector2i localPosition;
+
     sf::CircleShape station_graphicks(3.f);	
 	station_graphicks.setFillColor(sf::Color::Black);
 
@@ -89,6 +91,26 @@ int main()
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::KeyReleased){
+                if (event.key.code == sf::Keyboard::Q)
+                    trains[0].moveTrain(&stations);
+                if (event.key.code == sf::Keyboard::W)
+                    trains[1].moveTrain(&stations);
+            }
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+
+                trains[0].moveTrain(&stations, sf::Mouse::getPosition(window));
+                
+            }
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+
+                trains[1].moveTrain(&stations, sf::Mouse::getPosition(window));
+                
+            }
+                
         }
         window.clear(sf::Color::White);
 

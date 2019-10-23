@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include "STATION.h"
+#include <math.h>
 
 class TRAIN
 {
@@ -15,4 +17,7 @@ public:
 
     int getStationIndex();
     sf::Color getTrainColor();
+
+    void moveTrain(vector<STATION>*);
+    void moveTrain(vector<STATION>* , sf::Vector2i);
 };
