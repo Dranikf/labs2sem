@@ -3,6 +3,9 @@
 #include <iostream>
 #include "common_funcks.h"
 
+#ifndef STATION_H
+#define STATION_H
+
 using namespace std;
 
 
@@ -21,3 +24,5 @@ public:
     void showStationInfo();
     position getPosition();
 };
+
+#endif

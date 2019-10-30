@@ -2,26 +2,29 @@
 //#include "STATION.h"
 #include "TRAIN.h"
 #include <fstream>
+#include "EDGE.h"
 
 vector<STATION> stations;
 vector<TRAIN>   trains;
+vector<EDGE>    edges;
 
 const float stationRadius = 3.f;
 const float trainRadius = 5.f;
 
-bool readStationData(string fileName){
+template<typename T>
+bool readFileData(vector<T> * array, string fileName){
 
     ifstream file(fileName);
 
     if(!file.is_open())
         return false;
 
-    string stationStr;
+    string dataStr;
 
     while (!file.eof())
     {
-        getline(file, stationStr);
-        stations.push_back(STATION(stationStr));
+        getline(file, dataStr);
+        array->push_back(T(dataStr));
         
     }
     
@@ -29,7 +32,6 @@ bool readStationData(string fileName){
     file.close();
 
     return true;
-
 }
 
 void drawStations(sf::RenderWindow * window){
@@ -68,12 +70,28 @@ void drawTrains(sf::RenderWindow * window){
 
 }
 
+void drawLine(sf::RenderWindow * window, sf::Vector2f point1, sf::Vector2f point2,sf::Color color){
+
+    sf::Vertex line[] = {sf::Vertex(point1, color), sf::Vertex(point2, color)};
+
+    window->draw(line, 2, sf::Lines);
+
+}
+
+void drawGraph(sf::RenderWindow * window){
+
+    for (int i =0; i < edges.size(); i++)
+        drawLine(window, edges[i].startPoint , edges[i].endPoint , sf::Color::Black);
+
+}
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(400, 300), "My window");
 
     sf::RectangleShape rectangle(sf::Vector2f(400.f, 300.f));
 
+    EDGE::setStations(&stations);
         
     sf::Texture konturTexture;
     if (!konturTexture.loadFromFile("kontur.jpg"))
@@ -89,10 +107,13 @@ int main()
     sf::CircleShape station_graphicks(3.f);	
 	station_graphicks.setFillColor(sf::Color::Black);
 
-    if(!readStationData("stations.inf"))
+    if(!readFileData(&stations , "stations.inf"))
         return 0;
 
     createTrains();
+
+    if(!readFileData(&edges, "graphInfo"))
+        return 0;
 
     while (window.isOpen())
     {
@@ -130,6 +151,7 @@ int main()
 
         drawStations(&window);
         drawTrains(&window);
+        drawGraph(&window);
 
         window.display();
     }

@@ -1,6 +1,9 @@
 #include <vector>
 #include <string>
 
+#ifndef COMMON_FUNCTIONS_H
+#define COMMON_FUNCTIONS_H
+
 using namespace std;
 // тут объявлены общие для всех прочих файлов структуры и функции
 
@@ -10,3 +13,5 @@ struct  position // структура описывает позиции все�
 };
 
 void parseDataStr(std::vector<string> *, string);
+
+#endif
