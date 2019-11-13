@@ -60,10 +60,25 @@ void randMix(vector<int> * arr){
 
 }
 
+void emptyFunc(vector<int> * arr){}
+
+class algoritmControler{
+
+public:
+
+    void (*algoFunck)(vector<int> * arr) = emptyFunc;
+    void callAlgor(vector<int> * arr){algoFunck(arr);};
+
+
+};
+
 int main(){
 
     sf::RenderWindow window(sf::VideoMode(windWidth, windHeigth), "My window");
 
+    algoritmControler * algCont;
+
+    algCont = new algoritmControler;
 
     for(int i =0; i< 100 ; i++)
         wArray.push_back(i * 3);
@@ -81,18 +96,22 @@ int main(){
 
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Q)
-                    randMix(&wArray);
+                    algCont->algoFunck = randMix;
                 if  (event.key.code == sf::Keyboard::W)
-                    bubbleSort(&wArray);
+                    algCont->algoFunck = bubbleSort;
             }
                 
         }
+
         window.clear(sf::Color::White);
 
+        algCont->callAlgor(&wArray);
         visualiseVector(&wArray, &window);
 
         window.display();
     }
+
+    delete algCont;
 
     return 0;
 
