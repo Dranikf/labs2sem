@@ -37,19 +37,36 @@ void changeValues(int firstIndex, int secondIndex, vector<int> * arr){
 
 }
 
-void bubbleSort(vector<int> * arr){
+int bubbleSort(vector<int> * arr){
 
     for(int i =0 ; i < arr->size() -1; i++){
 
         if((*arr)[i]> (*arr)[i + 1]){
             changeValues(i, i+1, arr);
-            return;
+            return 0;
         } 
 
     }
+    return 1;
 }
 
-void randMix(vector<int> * arr){
+int revbubbleSort(vector<int> * arr){
+
+
+     for(int i =0 ; i < arr->size() -1; i++){
+
+         if((*arr)[i]< (*arr)[i + 1]){
+             changeValues(i, i+1, arr);
+             return 0;
+         }
+
+     }
+     return 1;
+
+
+}
+
+int randMix(vector<int> * arr){
 
     int firstIndex, secondIndex, temp;
 
@@ -58,16 +75,17 @@ void randMix(vector<int> * arr){
 
     changeValues(firstIndex, secondIndex, arr);
 
+    return 0;
 }
 
-void emptyFunc(vector<int> * arr){}
+int emptyFunc(vector<int> * arr){}
 
 class algoritmControler{
 
 public:
 
-    void (*algoFunck)(vector<int> * arr) = emptyFunc;
-    void callAlgor(vector<int> * arr){algoFunck(arr);};
+    int (*algoFunck)(vector<int> * arr) = emptyFunc;
+    int callAlgor(vector<int> * arr){return algoFunck(arr);};
 
 
 };
@@ -99,13 +117,16 @@ int main(){
                     algCont->algoFunck = randMix;
                 if  (event.key.code == sf::Keyboard::W)
                     algCont->algoFunck = bubbleSort;
+                if (event.key.code == sf::Keyboard::E)
+                    algCont->algoFunck= revbubbleSort;
             }
                 
         }
 
         window.clear(sf::Color::White);
 
-        algCont->callAlgor(&wArray);
+        if(algCont->callAlgor(&wArray)== 1)
+		algCont->algoFunck = emptyFunc;
         visualiseVector(&wArray, &window);
 
         window.display();
