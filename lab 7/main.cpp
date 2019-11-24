@@ -1,73 +1,66 @@
 #include <SFML/Graphics.hpp>
-//#include "STATION.h"
-#include "TRAIN.h"
 #include <fstream>
 #include "EDGE.h"
+#include <math.h>
+#include <stdlib.h>
 
 vector<STATION> stations;
-vector<TRAIN>   trains;
-vector<EDGE>    edges;
+vector<EDGE> edges;
+
+sf::Font activeFont;
 
 const float stationRadius = 3.f;
 const float trainRadius = 5.f;
 
 template<typename T>
-bool readFileData(vector<T> * array, string fileName){
+void saveVec2iToFile(vector<T> * array, string fileName){
 
-    ifstream file(fileName);
-
-    if(!file.is_open())
-        return false;
-
-    string dataStr;
-
-    while (!file.eof())
-    {
-        getline(file, dataStr);
-        array->push_back(T(dataStr));
-        
-    }
+    ofstream outFile(fileName);
+    int size = array->size();
     
-        
-    file.close();
+    for(int i = 0; i < size; i++){
 
-    return true;
+        outFile << (*array)[i].getDataString();
+
+        if(i != size -1) outFile << endl;
+
+    }
+
+    outFile.close();
+
+}
+
+void drawStationsText(sf::RenderWindow * window, sf::Font font, int size){
+
+    sf::Text number;
+
+    number.setFont(font);
+    number.setCharacterSize(size);
+    number.setFillColor(sf::Color::Black);
+
+    for(int i =0; i < stations.size(); i++){
+
+        number.setString(to_string(i));
+        number.setPosition((sf::Vector2f)stations[i].getPosition());
+
+        window->draw(number);
+    }
+
 }
 
 void drawStations(sf::RenderWindow * window){
 
     sf::CircleShape station_graphicks(stationRadius);	
 	station_graphicks.setFillColor(sf::Color::Black);
-    position tempPosition;
+    sf::Vector2i tempPosition;
 
     for (int i = 0; i < stations.size(); i++){
         tempPosition = stations[i].getPosition();
 
+        station_graphicks.setFillColor(stations[i].getColor());
         station_graphicks.setPosition(tempPosition.x, tempPosition.y); 
         window->draw(station_graphicks);
     }
-}
-
-void createTrains(){
-
-    trains.push_back(TRAIN(0, 1, sf::Color::Red));
-    trains.push_back(TRAIN(2, 2, sf::Color::Blue));
-
-}
-
-void drawTrains(sf::RenderWindow * window){
-
-    sf::CircleShape station_graphicks(trainRadius);	
-    position tempPosition;
-
-        for (int i = 0; i < trains.size(); i++){
-        tempPosition = stations[trains[i].getStationIndex()].getPosition();
-
-        station_graphicks.setFillColor(trains[i].getTrainColor());
-        station_graphicks.setPosition(tempPosition.x, tempPosition.y); 
-        window->draw(station_graphicks);
-    }
-
 }
 
 void drawLine(sf::RenderWindow * window, sf::Vector2f point1, sf::Vector2f point2,sf::Color color){
@@ -78,42 +71,47 @@ void drawLine(sf::RenderWindow * window, sf::Vector2f point1, sf::Vector2f point
 
 }
 
-void drawGraph(sf::RenderWindow * window){
+template<typename PointClass>
+int findNearestPoint(sf::Vector2i mousePosition , vector<PointClass> * points){
 
-    for (int i =0; i < edges.size(); i++)
-        drawLine(window, edges[i].startPoint , edges[i].endPoint , sf::Color::Black);
+    sf::Vector2i tempPosition;
+    float minDistance = -1.f , temDistance;
+    int minIndex = -1;
+    int i = 0;
 
+    do{
+
+        tempPosition = (*points)[i].getPosition();
+        temDistance = (float)pow((mousePosition.x - tempPosition.x),2) + (float)pow((mousePosition.y - tempPosition.y),2);
+        if(temDistance < minDistance || minDistance == -1.0f){
+
+            minDistance = temDistance;
+            minIndex = i;
+
+        }
+        
+        i++;
+    }while(i < points->size());
+
+    return minIndex;
 }
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(400, 300), "My window");
 
-    sf::RectangleShape rectangle(sf::Vector2f(400.f, 300.f));
+    int activePoint = -1; // это активная станция которая бегает за мышкой
+    int selectedPoint = 0; // это активная станция которая меняет цвет
+
+    sf::RenderWindow window(sf::VideoMode(400, 300), "My window");
+    if(!activeFont.loadFromFile("ArialBlack.ttf")) return 0;
+
 
     EDGE::setStations(&stations);
-        
-    sf::Texture konturTexture;
-    if (!konturTexture.loadFromFile("kontur.jpg"))
-    {
-        return 0;
-    }
-
-    rectangle.setTexture(&konturTexture);
-
-
-    sf::Vector2i localPosition;
-
-    sf::CircleShape station_graphicks(3.f);	
-	station_graphicks.setFillColor(sf::Color::Black);
 
     if(!readFileData(&stations , "stations.inf"))
         return 0;
-
-    createTrains();
-
-    if(!readFileData(&edges, "graphInfo"))
-        return 0;
+    
+    stations[selectedPoint].setColor(sf::Color::Red);
 
     while (window.isOpen())
     {
@@ -122,40 +120,52 @@ int main()
         while (window.pollEvent(event))
         {
             // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed){
                 window.close();
+                saveVec2iToFile(&stations, "test.txt");
+            }
 
             if (event.type == sf::Event::KeyReleased){
-                if (event.key.code == sf::Keyboard::Q)
-                    trains[0].moveTrain(&stations);
-                if (event.key.code == sf::Keyboard::W)
-                    trains[1].moveTrain(&stations);
-            }
+                if (event.key.code == sf::Keyboard::A){
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+                    string name;
 
-                //trains[0].moveTrain(&stations, sf::Mouse::getPosition(window));
-                //перемещиние первого поезда на точку на которую нажали, заремил в лабе 7
-                  position test;
-                  test.x = 40; test.y = 40;
-                  stations[0].setPosition(test);                
-            }
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                    cout<< "Enter station name:" << endl;
+                    getline(cin, name);
+                    stations.push_back(STATION(mousePosition.x, mousePosition.y, name));
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+                }
 
-                //trains[1].moveTrain(&stations, sf::Mouse::getPosition(window));
-                //перемещение второго поаезда
+                if (event.key.code == sf::Keyboard::N) cout << stations[selectedPoint].getName() << endl;
                 
+                if (event.key.code == sf::Keyboard::D)  stations.erase(stations.begin() + selectedPoint);
+
+                    
+
+
             }
+            
+            if(event.type == sf::Event::MouseButtonPressed){
+                activePoint = findNearestPoint(sf::Mouse::getPosition(window), &stations);
+                stations[selectedPoint].setColor(sf::Color::Black);
+                selectedPoint = activePoint;
+                stations[selectedPoint].setColor(sf::Color::Red);
+            }
+
+            if(event.type == sf::Event::MouseButtonReleased){
+                activePoint = -1;
+            }
+
                 
         }
+
+        if(activePoint != -1) stations[activePoint].setPosition(sf::Mouse::getPosition(window));
+
         window.clear(sf::Color::White);
 
-        window.draw(rectangle);
-
         drawStations(&window);
-        //drawTrains(&window); рисование поездов, отключил в лабараторке 7, чтобы не мешали
-        drawGraph(&window);
+        drawStationsText(&window, activeFont, 15);
 
         window.display();
     }

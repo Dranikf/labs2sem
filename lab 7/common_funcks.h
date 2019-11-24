@@ -1,5 +1,7 @@
 #include <vector>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 #ifndef COMMON_FUNCTIONS_H
 #define COMMON_FUNCTIONS_H
@@ -14,4 +16,5 @@ struct  position // структура описывает позиции все�
 
 void parseDataStr(std::vector<string> *, string);
 
+#include "common_funcks.tmp"
 #endif

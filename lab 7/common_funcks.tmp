@@ -1,0 +1,22 @@
+template<typename T>
+bool readFileData(vector<T> * array, string fileName){
+
+    ifstream file(fileName);
+
+    if(!file.is_open())
+        return false;
+
+    string dataStr;
+
+    while (!file.eof())
+    {
+        getline(file, dataStr);
+        array->push_back(T(dataStr));
+        
+    }
+    
+        
+    file.close();
+
+    return true;
+}

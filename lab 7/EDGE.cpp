@@ -10,7 +10,7 @@ EDGE::EDGE(string dataStr){
     vector<string> dataArray;
 
     parseDataStr(&dataArray, dataStr);
-    position tempPosition;
+    sf::Vector2i tempPosition;
 
     bool isFirst = false;
 
@@ -19,13 +19,11 @@ EDGE::EDGE(string dataStr){
         if(atoi(dataArray[i].c_str()) == 1){
 
             if (isFirst == true){
-                tempPosition = (*stationsPtr)[i].getPosition();
-                endPoint.x = tempPosition.x;endPoint.y = tempPosition.y;
+                endPointIndex = i;
                 break;
             }
             if(isFirst == false){
-                tempPosition = (*stationsPtr)[i].getPosition();
-                startPoint.x = tempPosition.x;startPoint.y = tempPosition.y;
+                startPointIndex = i;
                 isFirst = true;        
                 }
         }
@@ -33,13 +31,6 @@ EDGE::EDGE(string dataStr){
 
 }
 
-void EDGE::computePositions(vector<string> data){
-
-     
-
-
-
-}
 
 void EDGE::setStations(vector<STATION> * stationsPtr){
 

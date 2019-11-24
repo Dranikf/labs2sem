@@ -16,13 +16,12 @@ private:
     static vector<STATION> * stationsPtr;
 
 public:
-    sf::Vector2f startPoint;
-    sf::Vector2f endPoint;
+
+    int endPointIndex, startPointIndex;
     
     EDGE(string dataStr);
 
     static void setStations(vector<STATION> * stationsPtr);
-    void computePositions(vector<string> dataStr);
 
 };
 
