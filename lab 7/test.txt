@@ -5,3 +5,4 @@
 40 260 Brest
 300 260 Gomel
 100 240 Ivanovo
+188 170 Dzerzhinsk

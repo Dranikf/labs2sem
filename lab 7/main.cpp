@@ -122,7 +122,7 @@ int main()
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed){
                 window.close();
-                saveVec2iToFile(&stations, "test.txt");
+                saveVec2iToFile(&stations, "stations.inf");
             }
 
             if (event.type == sf::Event::KeyReleased){
