@@ -3,8 +3,6 @@
 #include "common_funcks.h"
 #include <vector>
 
-vector<STATION> * EDGE::stationsPtr = NULL;
-
 EDGE::EDGE(string dataStr){
 
     vector<string> dataArray;
@@ -31,9 +29,9 @@ EDGE::EDGE(string dataStr){
 
 }
 
+EDGE::EDGE(int startPointIndex, int endPointIndex){
 
-void EDGE::setStations(vector<STATION> * stationsPtr){
-
-    EDGE::stationsPtr = stationsPtr;
+    this->startPointIndex = startPointIndex;
+    this->endPointIndex = endPointIndex;
 
 }

@@ -11,17 +11,13 @@ using namespace std;
 
 class EDGE
 {
-private:
-
-    static vector<STATION> * stationsPtr;
 
 public:
 
     int endPointIndex, startPointIndex;
     
     EDGE(string dataStr);
-
-    static void setStations(vector<STATION> * stationsPtr);
+    EDGE(int startPointIndex, int endPointIndex);
 
 };
 

@@ -16,5 +16,7 @@ struct  position // структура описывает позиции все�
 
 void parseDataStr(std::vector<string> *, string);
 
+int cinGetInt();
+
 #include "common_funcks.tmp"
 #endif

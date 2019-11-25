@@ -4,6 +4,12 @@
 #include <math.h>
 #include <stdlib.h>
 
+// команды к программе 
+// a - сознать вершину (создаст под указателем мыши) нужно указать имя в консоли
+// n - получить имя выделенной вершины
+// d - удалить выделенную вершину
+
+
 vector<STATION> stations;
 vector<EDGE> edges;
 
@@ -96,6 +102,78 @@ int findNearestPoint(sf::Vector2i mousePosition , vector<PointClass> * points){
     return minIndex;
 }
 
+void drawEdges(sf::RenderWindow * window){
+
+    sf::Vector2f startPoint, endPoint;
+
+    for (int i = 0; i < edges.size(); i++){
+        startPoint = (sf::Vector2f)stations[edges[i].startPointIndex].getPosition();
+        endPoint = (sf::Vector2f)stations[edges[i].endPointIndex].getPosition();
+
+        drawLine(window, startPoint, endPoint, sf::Color::Black);
+
+    }
+
+}
+
+int checkCommection(int point1 , int point2){
+
+    for(int i = 0; i < edges.size(); i++){
+
+        if((edges[i].startPointIndex == point1 && edges[i].endPointIndex == point2) || 
+            (edges[i].startPointIndex == point2 && edges[i].endPointIndex == point1)){
+            return i;}
+    }
+
+    return -1;
+
+}
+
+void deleteEdge(int point1 , int point2){
+
+    int deletedIndex = checkCommection(point1, point2);
+    if(deletedIndex == -1){
+        cout<< "указанного соединения не сущесвует" << endl;
+        return;
+    }
+    
+    edges.erase(edges.begin() + deletedIndex);    
+
+}
+
+void cerateEdge(int sPointIndex){
+
+    string index_str ; int index;
+
+    cout << "Enter pointIndex for connection: ";
+    getline(cin ,index_str); index = atoi(index_str.c_str());
+    if (index >= stations.size() || index >= stations.size()  < 0){
+        cout<< "такой точки не существует!!" << endl;
+        return;
+    }
+
+    if (checkCommection(sPointIndex , index) != -1){
+        cout << "соединнение уже существует" << endl;
+        return;
+    }
+
+    edges.push_back(EDGE(sPointIndex, index));
+
+}
+
+void buttonIOnPressed(int selectedPoint){
+
+    cout<< "укажите соединение с какой точкой вы хотить разорвать:";
+    int index = cinGetInt();
+    if (index >= stations.size() || index >= stations.size()  < 0){
+        cout<< "такой точки не существует!!" << endl;
+        return;
+    }
+
+    deleteEdge(selectedPoint, index);
+
+}
+
 int main()
 {
 
@@ -106,9 +184,10 @@ int main()
     if(!activeFont.loadFromFile("ArialBlack.ttf")) return 0;
 
 
-    EDGE::setStations(&stations);
-
     if(!readFileData(&stations , "stations.inf"))
+        return 0;
+    
+    if(!readFileData(&edges, "graphInfo"))
         return 0;
     
     stations[selectedPoint].setColor(sf::Color::Red);
@@ -141,6 +220,9 @@ int main()
                 
                 if (event.key.code == sf::Keyboard::D)  stations.erase(stations.begin() + selectedPoint);
 
+                if  (event.key.code == sf::Keyboard::Q)  cerateEdge(selectedPoint);
+
+                if (event.key.code == sf::Keyboard::I)  buttonIOnPressed(selectedPoint);
                     
 
 
@@ -166,6 +248,8 @@ int main()
 
         drawStations(&window);
         drawStationsText(&window, activeFont, 15);
+
+        drawEdges(&window);
 
         window.display();
     }

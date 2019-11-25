@@ -18,3 +18,12 @@ void parseDataStr(std::vector<string> * dataPointer, string str){
     dataPointer->push_back(str.substr(prePos, str.length() - prePos));
 
 }
+
+int cinGetInt(){
+
+    string str;
+    getline(cin, str);
+
+    return atoi(str.c_str());
+
+}
