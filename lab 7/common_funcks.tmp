@@ -1,5 +1,5 @@
 template<typename T>
-bool readFileData(vector<T> * array, string fileName){
+bool readFileData(vector<T*> * array, string fileName){
 
     ifstream file(fileName);
 
@@ -11,7 +11,7 @@ bool readFileData(vector<T> * array, string fileName){
     while (!file.eof())
     {
         getline(file, dataStr);
-        array->push_back(T(dataStr));
+        array->push_back(new T(dataStr));
         
     }
     

@@ -10,13 +10,43 @@
 // d - удалить выделенную вершину
 
 
-vector<STATION> stations;
-vector<EDGE> edges;
+vector<STATION*> stations;
+vector<EDGE*> edges;
 
 sf::Font activeFont;
 
 const float stationRadius = 3.f;
 const float trainRadius = 5.f;
+
+void writeEdgesToFile(string fileName){
+
+    ofstream outFile(fileName);
+
+    int point1Index, point2Index;
+    string writeString;
+
+    for(int i = 0; i < edges.size(); i++ ){
+        if(i != 0) outFile << endl;
+
+        writeString = "";
+
+        for(int k = 0; k < stations.size(); k++){
+            writeString += " ";
+            if(edges[i]->startPoint == stations[k] || edges[i]->endPoint == stations[k]) 
+            {writeString += "1"; continue;}
+            
+            writeString += "0";
+        }
+
+        writeString.erase(0, 1);
+
+        outFile << writeString;
+
+    }
+
+    outFile.close();
+
+}
 
 template<typename T>
 void saveVec2iToFile(vector<T> * array, string fileName){
@@ -26,7 +56,7 @@ void saveVec2iToFile(vector<T> * array, string fileName){
     
     for(int i = 0; i < size; i++){
 
-        outFile << (*array)[i].getDataString();
+        outFile << (*array)[i]->getDataString();
 
         if(i != size -1) outFile << endl;
 
@@ -47,7 +77,7 @@ void drawStationsText(sf::RenderWindow * window, sf::Font font, int size){
     for(int i =0; i < stations.size(); i++){
 
         number.setString(to_string(i));
-        number.setPosition((sf::Vector2f)stations[i].getPosition());
+        number.setPosition((sf::Vector2f)stations[i]->getPosition());
 
         window->draw(number);
     }
@@ -61,9 +91,9 @@ void drawStations(sf::RenderWindow * window){
     sf::Vector2i tempPosition;
 
     for (int i = 0; i < stations.size(); i++){
-        tempPosition = stations[i].getPosition();
+        tempPosition = stations[i]->getPosition();
 
-        station_graphicks.setFillColor(stations[i].getColor());
+        station_graphicks.setFillColor(stations[i]->getColor());
         station_graphicks.setPosition(tempPosition.x, tempPosition.y); 
         window->draw(station_graphicks);
     }
@@ -87,7 +117,7 @@ int findNearestPoint(sf::Vector2i mousePosition , vector<PointClass> * points){
 
     do{
 
-        tempPosition = (*points)[i].getPosition();
+        tempPosition = (*points)[i]->getPosition();
         temDistance = (float)pow((mousePosition.x - tempPosition.x),2) + (float)pow((mousePosition.y - tempPosition.y),2);
         if(temDistance < minDistance || minDistance == -1.0f){
 
@@ -107,8 +137,8 @@ void drawEdges(sf::RenderWindow * window){
     sf::Vector2f startPoint, endPoint;
 
     for (int i = 0; i < edges.size(); i++){
-        startPoint = (sf::Vector2f)stations[edges[i].startPointIndex].getPosition();
-        endPoint = (sf::Vector2f)stations[edges[i].endPointIndex].getPosition();
+        startPoint = (sf::Vector2f)edges[i]->getStartPosition();
+        endPoint = (sf::Vector2f)edges[i]->getEndPosition();
 
         drawLine(window, startPoint, endPoint, sf::Color::Black);
 
@@ -120,12 +150,19 @@ int checkCommection(int point1 , int point2){
 
     for(int i = 0; i < edges.size(); i++){
 
-        if((edges[i].startPointIndex == point1 && edges[i].endPointIndex == point2) || 
-            (edges[i].startPointIndex == point2 && edges[i].endPointIndex == point1)){
+        if((edges[i]->startPoint == stations[point1] && edges[i]->endPoint == stations[point2]) || 
+            (edges[i]->startPoint == stations[point2] && edges[i]->endPoint == stations[point1])){
             return i;}
     }
 
     return -1;
+
+}
+
+void delEdge(int Index){
+
+    delete edges[Index];
+    edges.erase(edges.begin() + Index);    
 
 }
 
@@ -137,7 +174,7 @@ void deleteEdge(int point1 , int point2){
         return;
     }
     
-    edges.erase(edges.begin() + deletedIndex);    
+    delEdge(deletedIndex);    
 
 }
 
@@ -157,7 +194,7 @@ void cerateEdge(int sPointIndex){
         return;
     }
 
-    edges.push_back(EDGE(sPointIndex, index));
+    edges.push_back(new EDGE(sPointIndex, index));
 
 }
 
@@ -174,6 +211,25 @@ void buttonIOnPressed(int selectedPoint){
 
 }
 
+
+void deletePoint(int pointIndex){
+
+
+    for(int i = 0; i < edges.size(); i++){
+
+        if(edges[i]->startPoint == stations[pointIndex] || edges[i]->endPoint == stations[pointIndex]){
+            
+            delEdge(i);
+            i--;
+
+        }
+    }       
+
+    delete stations[pointIndex];
+    stations.erase(stations.begin() + pointIndex);
+
+}
+
 int main()
 {
 
@@ -185,12 +241,15 @@ int main()
 
 
     if(!readFileData(&stations , "stations.inf"))
-        return 0;
-    
+       return 0;
+
+    EDGE::stationsArr = &stations;
+
     if(!readFileData(&edges, "graphInfo"))
         return 0;
+
     
-    stations[selectedPoint].setColor(sf::Color::Red);
+    stations[selectedPoint]->setColor(sf::Color::Red);
 
     while (window.isOpen())
     {
@@ -200,8 +259,9 @@ int main()
         {
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed){
-                window.close();
                 saveVec2iToFile(&stations, "stations.inf");
+                writeEdgesToFile("graphInfo");
+                window.close();
             }
 
             if (event.type == sf::Event::KeyReleased){
@@ -212,13 +272,13 @@ int main()
                     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
                     cout<< "Enter station name:" << endl;
                     getline(cin, name);
-                    stations.push_back(STATION(mousePosition.x, mousePosition.y, name));
+                    stations.push_back(new STATION(mousePosition.x, mousePosition.y, name));
 
                 }
 
-                if (event.key.code == sf::Keyboard::N) cout << stations[selectedPoint].getName() << endl;
+                if (event.key.code == sf::Keyboard::N) cout << stations[selectedPoint]->getName() << endl;
                 
-                if (event.key.code == sf::Keyboard::D)  stations.erase(stations.begin() + selectedPoint);
+                if (event.key.code == sf::Keyboard::D)  deletePoint(selectedPoint);
 
                 if  (event.key.code == sf::Keyboard::Q)  cerateEdge(selectedPoint);
 
@@ -230,9 +290,9 @@ int main()
             
             if(event.type == sf::Event::MouseButtonPressed){
                 activePoint = findNearestPoint(sf::Mouse::getPosition(window), &stations);
-                stations[selectedPoint].setColor(sf::Color::Black);
+                stations[selectedPoint]->setColor(sf::Color::Black);
                 selectedPoint = activePoint;
-                stations[selectedPoint].setColor(sf::Color::Red);
+                stations[selectedPoint]->setColor(sf::Color::Red);
             }
 
             if(event.type == sf::Event::MouseButtonReleased){
@@ -242,7 +302,7 @@ int main()
                 
         }
 
-        if(activePoint != -1) stations[activePoint].setPosition(sf::Mouse::getPosition(window));
+        if(activePoint != -1) stations[activePoint]->setPosition(sf::Mouse::getPosition(window));
 
         window.clear(sf::Color::White);
 

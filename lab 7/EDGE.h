@@ -13,11 +13,17 @@ class EDGE
 {
 
 public:
-
-    int endPointIndex, startPointIndex;
     
+    static vector<STATION*> * stationsArr;
+
     EDGE(string dataStr);
     EDGE(int startPointIndex, int endPointIndex);
+
+    sf::Vector2i getStartPosition();
+    sf::Vector2i getEndPosition();
+
+    STATION * startPoint;
+    STATION * endPoint;
 
 };
 

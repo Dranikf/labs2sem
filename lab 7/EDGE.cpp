@@ -3,6 +3,8 @@
 #include "common_funcks.h"
 #include <vector>
 
+vector<STATION*> * EDGE::stationsArr;
+
 EDGE::EDGE(string dataStr){
 
     vector<string> dataArray;
@@ -17,11 +19,11 @@ EDGE::EDGE(string dataStr){
         if(atoi(dataArray[i].c_str()) == 1){
 
             if (isFirst == true){
-                endPointIndex = i;
+                endPoint = (*stationsArr)[i];
                 break;
             }
             if(isFirst == false){
-                startPointIndex = i;
+                startPoint = (*stationsArr)[i];
                 isFirst = true;        
                 }
         }
@@ -31,7 +33,19 @@ EDGE::EDGE(string dataStr){
 
 EDGE::EDGE(int startPointIndex, int endPointIndex){
 
-    this->startPointIndex = startPointIndex;
-    this->endPointIndex = endPointIndex;
+    this->startPoint = (*stationsArr)[startPointIndex];
+    this->endPoint = (*stationsArr)[endPointIndex];
+
+}
+
+sf::Vector2i EDGE::getEndPosition(){
+
+    return startPoint->getPosition();
+
+}
+
+sf::Vector2i EDGE::getStartPosition(){
+
+    return endPoint->getPosition();
 
 }
