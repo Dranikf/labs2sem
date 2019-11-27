@@ -189,6 +189,11 @@ void cerateEdge(int sPointIndex){
         return;
     }
 
+    if(sPointIndex == index){
+        cout << "поддержка петлевых связей отсудствует" << endl;
+        return;
+    }
+
     if (checkCommection(sPointIndex , index) != -1){
         cout << "соединнение уже существует" << endl;
         return;
@@ -227,6 +232,18 @@ void deletePoint(int pointIndex){
 
     delete stations[pointIndex];
     stations.erase(stations.begin() + pointIndex);
+
+}
+
+void releaseMemory(){
+
+    for(int i = 0; i < stations.size(); i++)
+        delete stations[i];
+
+
+    for (int i = 0; i < edges.size(); i++)
+        delete edges[i];
+
 
 }
 
