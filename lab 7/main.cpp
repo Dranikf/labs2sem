@@ -256,9 +256,11 @@ int main()
     sf::RenderWindow window(sf::VideoMode(400, 300), "My window");
     if(!activeFont.loadFromFile("ArialBlack.ttf")) return 0;
 
-
+	cout << " до станций" << endl;
     if(!readFileData(&stations , "stations.inf"))
        return 0;
+	cout << "after stations" << endl;
+
 
     EDGE::stationsArr = &stations;
 
@@ -278,6 +280,7 @@ int main()
             if (event.type == sf::Event::Closed){
                 saveVec2iToFile(&stations, "stations.inf");
                 writeEdgesToFile("graphInfo");
+		releaseMemory();
                 window.close();
             }
 
