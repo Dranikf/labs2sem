@@ -12,12 +12,12 @@ int main(){
     sf::RenderWindow window(sf::VideoMode(500, 700), "My window");
 
     sf::Texture birdTexture;
-    if (!birdTexture.loadFromFile("textures/flappybird.png"))
+    if (!birdTexture.loadFromFile("textures/kk.png"))
     {
         return 0;
     }
 
-    Bird m_bird(&birdTexture, sf::Vector2f(100, 200), sf::Vector2f(40, 40));
+    Bird m_bird(&birdTexture, sf::Vector2f(100, 200), sf::Vector2f(80, 80));
     fallController fallCont(&m_bird);
     
 
@@ -34,15 +34,15 @@ int main(){
 
             if (event.type == sf::Event::KeyReleased){
                 if (event.key.code == sf::Keyboard::Q)
-                    fallCont.setSpeed(0.0003);
+                    fallCont.setSpeed(50.0);
                 if (event.key.code == sf::Keyboard::W)
-                    fallCont.setSpeed(-0.0003);
+                    fallCont.setSpeed(-50.0);
                 if (event.key.code == sf::Keyboard::E)
                     fallCont.setSpeed(0);
                 if (event.key.code == sf::Keyboard::T)
-                    fallCont.setAcceleration(0.000000001);
+                    fallCont.setAcceleration(1000000);
                 if (event.key.code == sf::Keyboard::Y)
-                    fallCont.setAcceleration(-0.000000001);
+                    fallCont.setAcceleration(-1000000);
                 if (event.key.code == sf::Keyboard::U)
                     fallCont.setAcceleration(0);
                 if (event.key.code == sf::Keyboard::A)
@@ -53,7 +53,7 @@ int main(){
             }
         }
 
-        window.clear(sf::Color::White);
+        window.clear(sf::Color::Black);
 
         fallCont.calculatePosition();
         m_bird.Draw(&window);

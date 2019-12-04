@@ -1,5 +1,8 @@
 #include "fallController.h"
 #include "math.h"
+#include <iostream>
+
+using namespace std;
 
 fallController::fallController(Bird* bird){
 
@@ -18,8 +21,8 @@ void fallController::calculatePosition()
 {
     sf::Time t = clock.getElapsedTime();
     
-    V += weigth * a;
-    bird->position.y += t.asMicroseconds() * V;
+    V += a * pow(t.asSeconds(),2);
+    bird->position.y += t.asSeconds() * V;
 
     clock.restart();
 
