@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "SpaceObject.h"
+#include "PhisController.h"
 
 
 int main(){
 		
-    sf::RenderWindow window(sf::VideoMode(500, 700), "My window");
+    sf::RenderWindow window(sf::VideoMode(700, 300), "My window");
 
     sf::Texture shipTexture;
     if (!shipTexture.loadFromFile("textures/kk.png"))
@@ -12,8 +13,10 @@ int main(){
         return 0;
     }
 
-	SpaceObject ship(&shipTexture, sf::Vector2f(20, 20), sf::Vector2f(30, 30));
-    
+	SpaceObject ship(&shipTexture, sf::Vector2f(20, 20), sf::Vector2f(50, 50));
+
+    PhisController contr(&ship);
+	    
 
     while (window.isOpen())
     {
@@ -27,13 +30,16 @@ int main(){
             }
 
             if (event.type == sf::Event::KeyReleased){
-        //        if (event.key.code == sf::Keyboard::Q)
-          //          fallCont.setSpeed(50.0);
+                if (event.key.code == sf::Keyboard::W)
+                    contr.setSDirection(sf::Vector2f(0, -200));
+                if (event.key.code == sf::Keyboard::S)
+                    contr.setSDirection(sf::Vector2f(0, 200));
             }
         }
 
         window.clear(sf::Color::Black);
 
+        contr.computePosition();
         ship.Draw(&window);
 
         window.display();

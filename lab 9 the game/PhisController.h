@@ -9,10 +9,14 @@ class PhisController{
 
 	public:
 		PhisController(SpaceObject * object);
-		SpaceObject * object;
+
+		void setSDirection(sf::Vector2f dir);
+
+		void computePosition();
 	private:
-		sf::Vector2f direction;// направление движения обьекта
-		float speed;// выраженная в условных единицах скорость
+		SpaceObject * object;
+		sf::Vector2f direction;// направление движения обьекта, притом длинна вектора отразит также скорость
+		sf::Clock clock;
 
 		
 };
