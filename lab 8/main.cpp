@@ -1,12 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include "Bird.h"
+#include "SpaceShip.h"
 #include "fallController.h"
 
-void setBirtSize(Bird * b, int size){
-
-    b->size = sf::Vector2f(size , size);
-
-}
 
 int main(){
     sf::RenderWindow window(sf::VideoMode(500, 700), "My window");
@@ -17,7 +12,7 @@ int main(){
         return 0;
     }
 
-    Bird m_bird(&birdTexture, sf::Vector2f(100, 200), sf::Vector2f(80, 80));
+    SpaceShip m_bird(&birdTexture, sf::Vector2f(100, 200), sf::Vector2f(80, 80));
     fallController fallCont(&m_bird);
     
 
@@ -40,15 +35,11 @@ int main(){
                 if (event.key.code == sf::Keyboard::E)
                     fallCont.setSpeed(0);
                 if (event.key.code == sf::Keyboard::T)
-                    fallCont.setAcceleration(1000000);
+                    fallCont.setAcceleration(10000);
                 if (event.key.code == sf::Keyboard::Y)
-                    fallCont.setAcceleration(-1000000);
+                    fallCont.setAcceleration(-10000);
                 if (event.key.code == sf::Keyboard::U)
                     fallCont.setAcceleration(0);
-                if (event.key.code == sf::Keyboard::A)
-                    setBirtSize(&m_bird , 80);
-                if (event.key.code == sf::Keyboard::S)
-                    setBirtSize(&m_bird , 40);
                 
             }
         }

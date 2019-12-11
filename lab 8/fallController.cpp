@@ -4,13 +4,13 @@
 
 using namespace std;
 
-fallController::fallController(Bird* bird){
+fallController::fallController(SpaceShip* bird){
 
     this->bird = bird;
 
 }
 
-void fallController::setBirdPosition(sf::Vector2f position)
+void fallController::setSpaceShipPosition(sf::Vector2f position)
 {
 
     bird->position = position;

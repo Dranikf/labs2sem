@@ -1,6 +1,6 @@
-#include "Bird.h"
+#include "SpaceObject.h"
 
-Bird::Bird(sf::Texture * texture, sf::Vector2f sPos, sf::Vector2f size){
+SpaceObject::SpaceObject(sf::Texture * texture, sf::Vector2f sPos, sf::Vector2f size){
 
     position = sPos;
     this->texture = texture;
@@ -8,7 +8,7 @@ Bird::Bird(sf::Texture * texture, sf::Vector2f sPos, sf::Vector2f size){
 
 }
 
-void Bird::Draw(sf::RenderWindow * window){
+void SpaceObject::Draw(sf::RenderWindow * window){
 
     sf::RectangleShape rectangle(size);
 

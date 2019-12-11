@@ -3,13 +3,13 @@
 
 #include <SFML/Graphics.hpp>
 
-class fallController;
+class PhisController;
 
-class Bird
+class SpaceObject
 {
 private:
     
-    friend fallController;
+    friend PhisController;
 
     sf::Texture * texture;
 
@@ -17,10 +17,9 @@ private:
     sf::Vector2f size;
 
 public:
-    Bird(sf::Texture * texture, sf::Vector2f sPos, sf::Vector2f size);
+    SpaceObject(sf::Texture * texture, sf::Vector2f sPos, sf::Vector2f size);
     void Draw(sf::RenderWindow * window);
 
-    friend void setBirtSize(Bird * b, int size);
 };
 
 
