@@ -7,7 +7,7 @@ class PhisController;
 
 class SpaceObject
 {
-private:
+protected:
     
     friend PhisController;
 

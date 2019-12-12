@@ -1,11 +1,12 @@
 #include <SFML/Graphics.hpp>
-#include "SpaceObject.h"
-#include "PhisController.h"
+#include <iostream>
+#include "GameEngine.h"
 
+const int windWidth = 700, windHeigth = 300;
 
 int main(){
 		
-    sf::RenderWindow window(sf::VideoMode(700, 300), "My window");
+    sf::RenderWindow window(sf::VideoMode(windWidth, windHeigth), "My window");
 
     sf::Texture shipTexture;
     if (!shipTexture.loadFromFile("textures/kk.png"))
@@ -13,10 +14,14 @@ int main(){
         return 0;
     }
 
-	SpaceObject ship(&shipTexture, sf::Vector2f(20, 20), sf::Vector2f(50, 50));
+    sf::Texture commetTexture;
+    if (!commetTexture.loadFromFile("textures/commetTexture.png"))
+    {
+        return 0;
+    }
 
-    PhisController contr(&ship);
-	    
+    GameEngine eng(&shipTexture , &commetTexture, sf::Vector2i(windWidth, windHeigth));
+
 
     while (window.isOpen())
     {
@@ -24,23 +29,32 @@ int main(){
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed){
-
+                
+                
                 window.close();
+                eng.release();
 
+            }
+            
+            if(event.type == sf::Event::KeyPressed){
+                if (event.key.code == sf::Keyboard::Space)eng.OnSpaceButtonDown();
+                if (event.key.code == sf::Keyboard::S)eng.OnSButtonDown();
+                if (event.key.code == sf::Keyboard::W)eng.OnWButtonDown();
             }
 
             if (event.type == sf::Event::KeyReleased){
-                if (event.key.code == sf::Keyboard::W)
-                    contr.setSDirection(sf::Vector2f(0, -200));
-                if (event.key.code == sf::Keyboard::S)
-                    contr.setSDirection(sf::Vector2f(0, 200));
+                if (event.key.code == sf::Keyboard::W)eng.OnWButtonUp();
+                if (event.key.code == sf::Keyboard::S)eng.OnSButtonUp();
+
+                
             }
         }
 
         window.clear(sf::Color::Black);
 
-        contr.computePosition();
-        ship.Draw(&window);
+        //contr.computePosition();
+  
+        eng.Draw(&window);
 
         window.display();
 
