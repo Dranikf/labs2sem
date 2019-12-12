@@ -35,6 +35,4 @@ void SpaceComet::Draw(sf::RenderWindow * window){
     
     window->draw(rectangle);
 
-
-
 }

@@ -85,6 +85,8 @@ void GameEngine::frame(){
     for(int i = 0 ; i < mComets.size(); i++)
         mComets[i].cont->computePosition();
 
+    checkColisions();
+
 }
 
 void GameEngine::timerComets(){
@@ -123,4 +125,33 @@ void GameEngine::releaseComet(int index){
 
     mComets.erase(mComets.begin() + index);    
 
+}
+
+void GameEngine::releaseOldComets(){
+
+    for(int i = 0 ; i < mComets.size(); i++)
+        if( mComets[i].comet->getPosition().x < - 100)
+            releaseComet(i);
+}
+
+void getBorders(SpaceObject * obj, sf::Vector2f * UpLeft, sf::Vector2f * DownRight){
+
+    (*UpLeft) = obj->getPosition();
+    (*DownRight) = (*UpLeft) + obj->getSize();
+
+
+}
+
+int GameEngine::checkColisions(){
+
+    sf::Vector2f shipUpLeft;
+    sf::Vector2f shipDownRight;
+
+    getBorders(ship , &shipUpLeft , &shipDownRight);
+    cout << shipUpLeft.x << shipDownRight.x << endl;
+
+    for(int i = 0 ; i < mComets.size(); i++){
+        
+
+    }
 }

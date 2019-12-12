@@ -39,6 +39,8 @@ private:
     void createComet();
     int getRandComY();
     void releaseComet(int index);
+    void releaseOldComets();
+    int checkColisions();
 
 public:
     GameEngine(sf::Texture * shipTexture, sf::Texture * cometTex

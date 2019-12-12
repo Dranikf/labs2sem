@@ -18,3 +18,11 @@ void SpaceObject::Draw(sf::RenderWindow * window){
     window->draw(rectangle);
 
 }
+
+sf::Vector2f SpaceObject::getPosition(){
+    return position;
+}
+
+sf::Vector2f SpaceObject::getSize(){
+    return size;
+}

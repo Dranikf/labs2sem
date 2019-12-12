@@ -20,6 +20,9 @@ public:
     SpaceObject(sf::Texture * texture, sf::Vector2f sPos, sf::Vector2f size);
     void Draw(sf::RenderWindow * window);
 
+    sf::Vector2f getPosition();
+    sf::Vector2f getSize();
+
 };
 
 
