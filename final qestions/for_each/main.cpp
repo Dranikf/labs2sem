@@ -11,6 +11,11 @@ void summa(int n){
 
 void (*funPtr)(int n) = summa;
 
+class functor{
+	public:
+		void operator() (int n) {sum += n;};
+};
+
 int main(){
 	
 	
@@ -18,6 +23,16 @@ int main(){
 
 	for_each(v.begin(), v.end(), summa);
 
-	cout << "" << sum  << endl;
+	cout << "sum = " << sum  << endl;
+
+	sum = 0;
+	functor f;
+	for_each(v.begin(), v.end(), f);
+	cout<< "sum 2 = " << sum << endl;
+
+
+	sum = 0;
+	for_each(v.begin(), v.end(), [] (int n){sum += n;});
+	cout << "sum 3 = " << sum << endl;
 
 }
